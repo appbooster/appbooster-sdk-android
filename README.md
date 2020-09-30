@@ -115,7 +115,37 @@ val experiments = sdk.experiments
 
 Java:
 ```
-List<Experiment> experiments = sdk.getExperiments();
+Map<String, String> experiments = sdk.getExperiments();
+```
+
+Appsflyer users can integrate Appbooster sdk with analytics as shown below:
+
+Kotlin:
+```
+val experiments = sdk.experiments
+AppsFlyerLib.getInstance().setAdditionalData(experiments)
+```
+
+Java:
+```
+Map<String, String> experiments = sdk.getExperiments();
+AppsFlyerLib.getInstance().setAdditionalData(experiments);
+```
+
+Amplitude users can integrate Appbooster sdk with analytics as shown below:
+
+Kotlin:
+```
+val experiments = sdk.experiments
+val userProperties = JSONObject(experiments)
+Amplitude.getInstance().setUserProperties(userProperties)
+```
+
+Java:
+```
+Map<String, String> experiments = sdk.getExperiments();
+JSONObject userProperties = new JSONObject(experiments);
+AppsFlyerLib.getInstance().setAdditionalData(userProperties);
 ```
 
 ### How to debug?

@@ -49,7 +49,8 @@ public class AppboosterSdk private constructor(
 ) {
 
     private var mLastShakeTime: Long = -1L
-    private val client: Client = Client(store, appId, deviceId, sdkToken, connectionTimeout, isInDevMode)
+    private val client: Client =
+        Client(store, appId, deviceId, sdkToken, connectionTimeout, isInDevMode)
     private val handler: AppboosterHandler = AppboosterHandler()
 
     init {
@@ -82,20 +83,30 @@ public class AppboosterSdk private constructor(
 
     /**
      * Returns list of [Experiment] applied to current device
+     *
+     * @param withPrefix to prepend `[Appbooster]` prefix to experiment keys returned. `true` by default.
      */
-    public val experiments: List<Experiment>
-        get() {
-            return if (store.isInDebugMode) {
-                store.experimentsDefaults
-                    .map { experiment ->
-                        val debugExperiment =
-                            store.experimentsDebug.firstOrNull { debug -> experiment.key == debug.value }
-                        Experiment(experiment.key, debugExperiment?.value ?: experiment.value)
-                    }
-            } else {
-                store.experimentsDefaults
+    @JvmOverloads
+    public fun getExperiments(withPrefix: Boolean = true): Map<String, String> {
+        return HashMap<String, String>()
+            .apply {
+                if (store.isInDebugMode) {
+                    store.experimentsDefaults
+                        .map { experiment ->
+                            val debugExperiment =
+                                store.experimentsDebug.firstOrNull { debug -> experiment.key == debug.value }
+                            Experiment(experiment.key, debugExperiment?.value ?: experiment.value)
+                        }
+                } else {
+                    store.experimentsDefaults
+                }.forEach { experiment ->
+                    put(
+                        if (withPrefix) "[Appbooster] ${experiment.key}" else experiment.key,
+                        experiment.value
+                    )
+                }
             }
-        }
+    }
 
     /**
      * Returns the latest fetch experiments operation duration
@@ -108,7 +119,10 @@ public class AppboosterSdk private constructor(
     /**
      * Asynchronously fetches experiments from the Appbooster servers.
      * */
-    public fun fetch(@NotNull onSuccessListener: OnSuccessListener, @NotNull onErrorListener: OnErrorListener) {
+    public fun fetch(
+        @NotNull onSuccessListener: OnSuccessListener,
+        @NotNull onErrorListener: OnErrorListener
+    ) {
         client.fetchExperiments(defaults, handler, onSuccessListener, onErrorListener)
     }
 
@@ -137,12 +151,11 @@ public class AppboosterSdk private constructor(
      *
      * @returns [Boolean] `false` if your Appbooster SDK configuration does not allow debug mode. `true` by default.
      * */
-    public fun launchDebugMode(@NotNull context: Context) : Boolean{
+    public fun launchDebugMode(@NotNull context: Context): Boolean {
         if (store.isInDebugMode) {
             AppboosterDebugActivity.launch(context)
             return true
-        }
-        else {
+        } else {
             return false
         }
     }
@@ -196,7 +209,8 @@ public class AppboosterSdk private constructor(
          *
          * @param duration Timeout duration in millseconds.
          */
-        fun fetchTimeout(@NotNull duration: Long = 3000L) = apply { this.connectionTimeout = duration }
+        fun fetchTimeout(@NotNull duration: Long = 3000L) =
+            apply { this.connectionTimeout = duration }
 
         /**
          * Turns the developer mode on or off.
