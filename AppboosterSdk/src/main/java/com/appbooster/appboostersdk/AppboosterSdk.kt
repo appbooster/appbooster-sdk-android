@@ -43,18 +43,18 @@ public class AppboosterSdk private constructor(
     deviceId: String,
     usingShake: Boolean,
     connectionTimeout: Long,
-    isInDevMode: Boolean,
+    showLogs: Boolean,
     private val defaults: Map<String, String>,
     private val store: Store
 ) {
 
     private var mLastShakeTime: Long = -1L
     private val client: Client =
-        Client(store, appId, deviceId, sdkToken, connectionTimeout, isInDevMode)
+        Client(store, appId, deviceId, sdkToken, connectionTimeout, showLogs)
     private val handler: AppboosterHandler = AppboosterHandler()
 
     init {
-        Logger.LOG = isInDevMode || BuildConfig.DEBUG
+        Logger.LOG = showLogs || BuildConfig.DEBUG
 
         if (store.experimentsDefaults.isEmpty()) {
             store.experimentsDefaults = defaults.map { (k, v) ->
@@ -167,7 +167,7 @@ public class AppboosterSdk private constructor(
         private var deviceId: String? = null
         private var usingShake: Boolean = true
         private var connectionTimeout: Long = 3000L
-        private var isInDevMode: Boolean = false
+        private var showLogs: Boolean = false
         private var defaults: Map<String, String> = emptyMap()
 
         private val store = Store.getInstance(context.applicationContext)
@@ -213,12 +213,12 @@ public class AppboosterSdk private constructor(
             apply { this.connectionTimeout = duration }
 
         /**
-         * Turns the developer mode on or off.
+         * Switch internal dev logs on and off.
          *
          * @param enable Should be `true` to enable, or `false` to disable this
          *     setting. `false` by default.
          */
-        fun isInDevMode(@NotNull enable: Boolean = false) = apply { this.isInDevMode = enable }
+        fun showLogs(@NotNull enable: Boolean = false) = apply { this.showLogs = enable }
 
         /**
          * Sets default experiments key/value map to fetch from the Appbooster servers and fallback in case of failed fetch.
@@ -262,7 +262,7 @@ public class AppboosterSdk private constructor(
                 deviceId!!,
                 usingShake,
                 connectionTimeout,
-                isInDevMode,
+                showLogs,
                 defaults,
                 store
             )
