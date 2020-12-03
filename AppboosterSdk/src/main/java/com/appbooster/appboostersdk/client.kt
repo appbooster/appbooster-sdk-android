@@ -2,6 +2,7 @@ package com.appbooster.appboostersdk
 
 import android.os.SystemClock
 import android.util.Log
+import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import io.jsonwebtoken.security.Keys
@@ -9,6 +10,7 @@ import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
 import java.io.IOException
 import java.util.concurrent.TimeUnit
+
 
 /*
  * MIT License
@@ -197,11 +199,22 @@ internal class RequestBuilder(
 
     private fun makeAccessToken(): String {
         try {
+
+            val claims = appsflyerId?.let {
+                Jwts.claims()
+                    .apply {
+                        put("deviceId", deviceId)
+                        put("appsFlyerId", it)
+                    }
+            } ?: Jwts.claims()
+                .apply {
+                    put("deviceId", deviceId)
+                }
+
             return Jwts.builder()
                 .setHeaderParam("alg", "HS256")
                 .setHeaderParam("typ", "JWT")
-                .claim("deviceId", deviceId)
-                .claim("appsflyerId",appsflyerId)
+                .setClaims(claims)
                 .signWith(Keys.hmacShaKeyFor(token.toByteArray()), SignatureAlgorithm.HS256)
                 .compact()
         }
