@@ -41,7 +41,7 @@ internal class Client(
     appId: String,
     deviceId: String,
     token: String,
-    appsflyerId: String?,
+    appsFlyerId: String?,
     connectionTimeout: Long,
     isInDevMode: Boolean
 ) {
@@ -60,7 +60,7 @@ internal class Client(
             }
         )
         .build()
-    private val requestBuilder = RequestBuilder(appId, deviceId, token, appsflyerId)
+    private val requestBuilder = RequestBuilder(appId, deviceId, token, appsFlyerId)
     private val jsonAdapters = JsonAdapters
 
     internal var lastOperationDurationMillis: Long = -1
@@ -182,7 +182,7 @@ internal class RequestBuilder(
     private val appId: String,
     private val deviceId: String,
     private val token: String,
-    private val appsflyerId: String?
+    private val appsFlyerId: String?
 ) {
     internal fun request(query: String, vararg paths: String) = Request.Builder()
         .addHeader(contentTypeHeader.first, contentTypeHeader.second)
@@ -200,7 +200,7 @@ internal class RequestBuilder(
     private fun makeAccessToken(): String {
         try {
 
-            val claims = appsflyerId?.let {
+            val claims = appsFlyerId?.let {
                 Jwts.claims()
                     .apply {
                         put("deviceId", deviceId)

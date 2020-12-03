@@ -45,13 +45,13 @@ public class AppboosterSdk private constructor(
     connectionTimeout: Long,
     showLogs: Boolean,
     private val defaults: Map<String, String>,
-    appsflyerId: String?,
+    appsFlyerId: String?,
     private val store: Store
 ) {
 
     private var mLastShakeTime: Long = -1L
     private val client: Client =
-        Client(store, appId, deviceId, sdkToken, appsflyerId, connectionTimeout, showLogs)
+        Client(store, appId, deviceId, sdkToken, appsFlyerId, connectionTimeout, showLogs)
     private val handler: AppboosterHandler = AppboosterHandler()
 
     init {
@@ -187,7 +187,7 @@ public class AppboosterSdk private constructor(
         private var connectionTimeout: Long = 3000L
         private var showLogs: Boolean = false
         private var defaults: Map<String, String> = emptyMap()
-        private var appsflyerId: String? = null
+        private var appsFlyerId: String? = null
 
         private val store = Store.getInstance(context.applicationContext)
 
@@ -251,7 +251,7 @@ public class AppboosterSdk private constructor(
          *
          *
          * */
-        fun appsFlyerId(id: String) = apply { this.appsflyerId = id }
+        fun appsFlyerId(id: String) = apply { this.appsFlyerId = id }
 
 
         /**
@@ -291,7 +291,7 @@ public class AppboosterSdk private constructor(
                 connectionTimeout,
                 showLogs,
                 defaults,
-                appsflyerId,
+                appsFlyerId,
                 store
             )
         }
