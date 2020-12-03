@@ -39,6 +39,7 @@ internal class Client(
     appId: String,
     deviceId: String,
     token: String,
+    appsflyerId: String?,
     connectionTimeout: Long,
     isInDevMode: Boolean
 ) {
@@ -57,7 +58,7 @@ internal class Client(
             }
         )
         .build()
-    private val requestBuilder = RequestBuilder(appId, deviceId, token)
+    private val requestBuilder = RequestBuilder(appId, deviceId, token, appsflyerId)
     private val jsonAdapters = JsonAdapters
 
     internal var lastOperationDurationMillis: Long = -1
@@ -178,7 +179,8 @@ internal interface Api {
 internal class RequestBuilder(
     private val appId: String,
     private val deviceId: String,
-    private val token: String
+    private val token: String,
+    private val appsflyerId: String?
 ) {
     internal fun request(query: String, vararg paths: String) = Request.Builder()
         .addHeader(contentTypeHeader.first, contentTypeHeader.second)
@@ -199,6 +201,7 @@ internal class RequestBuilder(
                 .setHeaderParam("alg", "HS256")
                 .setHeaderParam("typ", "JWT")
                 .claim("deviceId", deviceId)
+                .claim("appsflyerId",appsflyerId)
                 .signWith(Keys.hmacShaKeyFor(token.toByteArray()), SignatureAlgorithm.HS256)
                 .compact()
         }
