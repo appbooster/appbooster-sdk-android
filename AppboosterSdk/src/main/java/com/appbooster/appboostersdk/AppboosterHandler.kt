@@ -24,7 +24,7 @@ internal class AppboosterHandler : Handler(Looper.getMainLooper()) {
     }
 
     internal fun sendError(listener: AppboosterSdk.OnErrorListener, th: Throwable) {
-        obtainMessage(ON_SUCCESS, Result(null, listener, th)).sendToTarget();
+        obtainMessage(ON_ERROR, Result(null, listener, th)).sendToTarget();
     }
 
     class Result(
